@@ -20,7 +20,7 @@ local api = {
 }
 
 local function GetURL(scripturl)
-	if shared.VapeDeveloper then
+	if shared.rentDeveloper then
 		return readfile("NewBedwars/"..scripturl)
 	else
 		return game:HttpGet("https://raw.github.com/CreatedHeroISMyFavoriteHero/NewBedwars/main/"..scripturl, true)
@@ -102,7 +102,7 @@ end
 local function getcustomassetfunc(path)
 	if not isfile(path) then
 		local req = requestfunc({
-			Url = "https://raw.githubusercontent.com/7GrandDadPGN/VapeV4ForRoblox/main/"..path:gsub("vape/assets", "assets"),
+			Url = "https://raw.githubusercontent.com/CreatedHeroISMyFavoriteHero/NewBedwars/main/"..path:gsub("rent/assets", "assets"),
 			Method = "GET"
 		})
 		writefile(path, req.Body)
@@ -229,7 +229,7 @@ local function dragGUI(gui, tab)
 end
 
 api["SaveSettings"] = function()
-	writefile("vape/Profiles/"..game.PlaceId..".vapeprofiles", game:GetService("HttpService"):JSONEncode(api["Profiles"]))
+	writefile("rent/Profiles/"..game.PlaceId..".rentprofiles", game:GetService("HttpService"):JSONEncode(api["Profiles"]))
 	local WindowTable = {}
 	for i,v in pairs(api["ObjectsThatCanBeSaved"]) do
 		if v["Type"] == "Window" then
@@ -267,20 +267,20 @@ api["SaveSettings"] = function()
 		end
 	end
 	WindowTable["GUIKeybind"] = {["Type"] = "GUIKeybind", ["Value"] = api["GUIKeybind"]}
-	writefile("vape/Profiles/"..(api["CurrentProfile"] == "default" and "" or api["CurrentProfile"])..game.PlaceId..".vapeprofile", game:GetService("HttpService"):JSONEncode(api["Settings"]))
-	writefile("vape/Profiles/GUIPositions.vapeprofile", game:GetService("HttpService"):JSONEncode(WindowTable))
+	writefile("rent/Profiles/"..(api["CurrentProfile"] == "default" and "" or api["CurrentProfile"])..game.PlaceId..".rentprofile", game:GetService("HttpService"):JSONEncode(api["Settings"]))
+	writefile("rent/Profiles/GUIPositions.rentprofile", game:GetService("HttpService"):JSONEncode(WindowTable))
 end
 
 api["LoadSettings"] = function()
 	local success2, result2 = pcall(function()
-		return game:GetService("HttpService"):JSONDecode(readfile("vape/Profiles/"..game.PlaceId..".vapeprofiles"))
+		return game:GetService("HttpService"):JSONDecode(readfile("rent/Profiles/"..game.PlaceId..".rentprofiles"))
 	end)
 	if success2 and type(result2) == "table" then
 		api["Profiles"] = result2
 	end
 	getprofile()
 	local success3, result3 = pcall(function()
-		return game:GetService("HttpService"):JSONDecode(readfile("vape/Profiles/GUIPositions.vapeprofile"))
+		return game:GetService("HttpService"):JSONDecode(readfile("rent/Profiles/GUIPositions.rentprofile"))
 	end)
 	if success3 and type(result3) == "table" then
 		for i,v in pairs(result3) do
@@ -325,7 +325,7 @@ api["LoadSettings"] = function()
 		end
 	end
 	local success, result = pcall(function()
-		return game:GetService("HttpService"):JSONDecode(readfile("vape/Profiles/"..(api["CurrentProfile"] == "default" and "" or api["CurrentProfile"])..game.PlaceId..".vapeprofile"))
+		return game:GetService("HttpService"):JSONDecode(readfile("rent/Profiles/"..(api["CurrentProfile"] == "default" and "" or api["CurrentProfile"])..game.PlaceId..".rentprofile"))
 	end)
 	if success and type(result) == "table" then
 		for i,v in pairs(result) do
@@ -392,15 +392,15 @@ end
 api["SwitchProfile"] = function(profilename)
 	api["Profiles"][api["CurrentProfile"]]["Selected"] = false
 	api["Profiles"][profilename]["Selected"] = true
-	if (not isfile("vape/Profiles/"..(profilename == "default" and "" or profilename)..game.PlaceId..".vapeprofile")) then
+	if (not isfile("rent/Profiles/"..(profilename == "default" and "" or profilename)..game.PlaceId..".rentprofile")) then
 		local realprofile = api["CurrentProfile"]
 		api["CurrentProfile"] = profilename
 		api["SaveSettings"]()
 		api["CurrentProfile"] = realprofile
 	end
 	api["SelfDestruct"]()
-	shared.VapeSwitchServers = true
-	shared.VapeOpenGui = (clickgui.Visible)
+	shared.rentSwitchServers = true
+	shared.rentOpenGui = (clickgui.Visible)
 	loadstring(GetURL("NewMainScript.lua"))()
 end
 
@@ -422,7 +422,7 @@ api["CreateMainWindow"] = function()
 	windowlogo1.Active = false
 	windowlogo1.Position = UDim2.new(0, 11, 0, 12)
 	windowlogo1.BackgroundTransparency = 1
-	windowlogo1.Image = getcustomassetfunc("vape/assets/VapeLogo1.png")
+	windowlogo1.Image = getcustomassetfunc("rent/assets/rentLogo1.png")
 	windowlogo1.Name = "Logo1"
 	windowlogo1.Parent = windowtitle
 	local windowlogo2 = Instance.new("ImageLabel")
@@ -431,14 +431,14 @@ api["CreateMainWindow"] = function()
 	windowlogo2.Position = UDim2.new(1, 1, 0, 1)
 	windowlogo2.BackgroundTransparency = 1
 	windowlogo2.ImageColor3 = Color3.fromHSV(0.44, 1, 1)
-	windowlogo2.Image = getcustomassetfunc("vape/assets/VapeLogo2.png")
+	windowlogo2.Image = getcustomassetfunc("rent/assets/vapeLogo2.png")
 	windowlogo2.Name = "Logo2"
 	windowlogo2.Parent = windowlogo1
 	local settingsicon = Instance.new("ImageLabel")
 	settingsicon.Name = "SettingsWindowIcon"
 	settingsicon.Size = UDim2.new(0, 16, 0, 16)
 	settingsicon.Visible = false
-	settingsicon.Image = getcustomassetfunc("vape/assets/SettingsWheel2.png")
+	settingsicon.Image = getcustomassetfunc("rent/assets/SettingsWheel2.png")
 	settingsicon.BackgroundTransparency = 1
 	settingsicon.Position = UDim2.new(0, 10, 0, 13)
 	settingsicon.Parent = windowtitle
@@ -457,13 +457,13 @@ api["CreateMainWindow"] = function()
 	local settingswheel = Instance.new("ImageButton")
 	settingswheel.Name = "SettingsWheel"
 	settingswheel.Size = UDim2.new(0, 14, 0, 14)
-	settingswheel.Image = getcustomassetfunc("vape/assets/SettingsWheel1.png")
+	settingswheel.Image = getcustomassetfunc("rent/assets/SettingsWheel1.png")
 	settingswheel.Position = UDim2.new(1, -25, 0, 14)
 	settingswheel.BackgroundTransparency = 1
 	settingswheel.Parent = windowtitle
 	local discordbutton = settingswheel:Clone()
 	discordbutton.Size = UDim2.new(0, 16, 0, 16)
-	discordbutton.Image = getcustomassetfunc("vape/assets/DiscordIcon.png")
+	discordbutton.Image = getcustomassetfunc("rent/assets/DiscordIcon.png")
 	discordbutton.Position = UDim2.new(1, -52, 0, 13)
 	discordbutton.Parent = windowtitle
 	discordbutton.MouseButton1Click:connect(function()
@@ -473,8 +473,8 @@ api["CreateMainWindow"] = function()
 					local reqbody = {
 						["nonce"] = game:GetService("HttpService"):GenerateGUID(false),
 						["args"] = {
-							["invite"] = {["code"] = "robloxvape"},
-							["code"] = "robloxvape",
+							["invite"] = {["code"] = "robloxrent"},
+							["code"] = "robloxrent",
 						},
 						["cmd"] = "INVITE_BROWSER"
 					}
@@ -519,7 +519,7 @@ api["CreateMainWindow"] = function()
 	settingsexit.ImageColor3 = Color3.fromRGB(121, 121, 121)
 	settingsexit.Size = UDim2.new(0, 24, 0, 24)
 	settingsexit.AutoButtonColor = false
-	settingsexit.Image = getcustomassetfunc("vape/assets/ExitIcon1.png")
+	settingsexit.Image = getcustomassetfunc("rent/assets/ExitIcon1.png")
 	settingsexit.Visible = false
 	settingsexit.Position = UDim2.new(1, -32, 0, 9)
 	settingsexit.BackgroundColor3 = Color3.fromRGB(26, 25, 26)
@@ -566,7 +566,7 @@ api["CreateMainWindow"] = function()
 	overlaysicon.Name = "OverlaysWindowIcon"
 	overlaysicon.Size = UDim2.new(0, 14, 0, 12)
 	overlaysicon.Visible = true
-	overlaysicon.Image = getcustomassetfunc("vape/assets/TextGUIIcon4.png")
+	overlaysicon.Image = getcustomassetfunc("rent/assets/TextGUIIcon4.png")
 	overlaysicon.BackgroundTransparency = 1
 	overlaysicon.Position = UDim2.new(0, 10, 0, 15)
 	overlaysicon.Parent = overlaystitle
@@ -575,7 +575,7 @@ api["CreateMainWindow"] = function()
 	overlaysexit.ImageColor3 = Color3.fromRGB(121, 121, 121)
 	overlaysexit.Size = UDim2.new(0, 24, 0, 24)
 	overlaysexit.AutoButtonColor = false
-	overlaysexit.Image = getcustomassetfunc("vape/assets/ExitIcon1.png")
+	overlaysexit.Image = getcustomassetfunc("rent/assets/ExitIcon1.png")
 	overlaysexit.Position = UDim2.new(1, -32, 0, 9)
 	overlaysexit.BackgroundColor3 = Color3.fromRGB(26, 25, 26)
 	overlaysexit.Parent = overlaystitle
@@ -594,7 +594,7 @@ api["CreateMainWindow"] = function()
 	overlaysbutton.Position = UDim2.new(1, -23, 0, 15)
 	overlaysbutton.BackgroundTransparency = 1
 	overlaysbutton.AutoButtonColor = false
-	overlaysbutton.Image = getcustomassetfunc("vape/assets/TextGUIIcon2.png")
+	overlaysbutton.Image = getcustomassetfunc("rent/assets/TextGUIIcon2.png")
 	overlaysbutton.Parent = extraframe
 	local overlaystext = Instance.new("TextLabel")
 	overlaystext.Size = UDim2.new(0, 155, 0, 39)
@@ -787,7 +787,7 @@ api["CreateMainWindow"] = function()
 		end)
 
 		
-		api["ObjectsThatCanBeSaved"][(compatability or "VapeSettings")..name.."Toggle"] = {["Type"] = "ToggleMain", ["Object"] = buttontext, ["Api"] = buttonapi}
+		api["ObjectsThatCanBeSaved"][(compatability or "rentSettings")..name.."Toggle"] = {["Type"] = "ToggleMain", ["Object"] = buttontext, ["Api"] = buttonapi}
 		return buttonapi
 	end
 
@@ -864,7 +864,7 @@ api["CreateMainWindow"] = function()
 		bindbkg.Visible = true
 		bindbkg.Parent = frame
 		local bindimg = Instance.new("ImageLabel")
-		bindimg.Image = getcustomassetfunc("vape/assets/KeybindIcon.png")
+		bindimg.Image = getcustomassetfunc("rent/assets/KeybindIcon.png")
 		bindimg.BackgroundTransparency = 1
 		bindimg.ImageTransparency = 0.2
 		bindimg.Size = UDim2.new(0, 12, 0, 12)
@@ -917,14 +917,14 @@ api["CreateMainWindow"] = function()
 			end
 		end)
 		bindbkg.MouseEnter:connect(function() 
-			bindimg.Image = getcustomassetfunc("vape/assets/PencilIcon.png") 
+			bindimg.Image = getcustomassetfunc("rent/assets/PencilIcon.png") 
 			bindimg.Visible = true
 			bindtext.Visible = false
 			bindbkg.Size = UDim2.new(0, 20, 0, 21)
 			bindbkg.Position = UDim2.new(1, -30, 0, 10)
 		end)
 		bindbkg.MouseLeave:connect(function() 
-			bindimg.Image = getcustomassetfunc("vape/assets/KeybindIcon.png")
+			bindimg.Image = getcustomassetfunc("rent/assets/KeybindIcon.png")
 			if api["GUIKeybind"] ~= "" then
 				bindimg.Visible = false
 				bindtext.Visible = true
@@ -998,7 +998,7 @@ api["CreateMainWindow"] = function()
 		slider3.Size = UDim2.new(0, 24, 0, 16)
 		slider3.BackgroundColor3 = Color3.fromRGB(26, 25, 26)
 		slider3.BorderSizePixel = 0
-		slider3.Image = getcustomassetfunc("vape/assets/SliderButton1.png")
+		slider3.Image = getcustomassetfunc("rent/assets/SliderButton1.png")
 		slider3.Position = UDim2.new(0.44, -11, 0, -7)
 		slider3.Parent = slider1
 		slider3.Name = "ButtonSlider"
@@ -1023,7 +1023,7 @@ api["CreateMainWindow"] = function()
 						else
 							coroutine.yield(heh)
 						end
-					until sliderapi["RainbowValue"] == false or shared.VapeExecuted == nil
+					until sliderapi["RainbowValue"] == false or shared.rentExecuted == nil
 				end))
 			end
 		end
@@ -1168,7 +1168,7 @@ api["CreateMainWindow"] = function()
 			end
 		end)
 		
-		api["ObjectsThatCanBeSaved"][(compatability or "VapeSettings")..name.."Toggle"] = {["Type"] = "Toggle", ["Object"] = buttontext, ["Api"] = buttonapi}
+		api["ObjectsThatCanBeSaved"][(compatability or "rentSettings")..name.."Toggle"] = {["Type"] = "Toggle", ["Object"] = buttontext, ["Api"] = buttonapi}
 		return buttonapi
 	end
 
@@ -1201,7 +1201,7 @@ api["CreateMainWindow"] = function()
 		arrow.BackgroundTransparency = 1
 		arrow.Name = "RightArrow"
 		arrow.Position = UDim2.new(1, -20, 0, 16)
-		arrow.Image = getcustomassetfunc("vape/assets/RightArrow.png")
+		arrow.Image = getcustomassetfunc("rent/assets/RightArrow.png")
 		arrow.Active = false
 		arrow.Parent = button
 		local buttonicon
@@ -1340,7 +1340,7 @@ api["CreateCustomWindow"] = function(name, icon, iconsize, position, visible)
 	local expandbutton = Instance.new("ImageButton")
 	expandbutton.AutoButtonColor = false
 	expandbutton.Size = UDim2.new(0, 16, 0, 16)
-	expandbutton.Image = getcustomassetfunc("vape/assets/PinButton.png")
+	expandbutton.Image = getcustomassetfunc("rent/assets/PinButton.png")
 	expandbutton.ImageTransparency = 0.2
 	expandbutton.BackgroundTransparency = 1
 	expandbutton.Name = "PinButton" 
@@ -1352,7 +1352,7 @@ api["CreateCustomWindow"] = function(name, icon, iconsize, position, visible)
 	optionsbutton.Position = UDim2.new(1, -16, 0, 11)
 	optionsbutton.Name = "OptionsButton"
 	optionsbutton.BackgroundTransparency = 1
-	optionsbutton.Image = getcustomassetfunc("vape/assets/MoreButton3.png")
+	optionsbutton.Image = getcustomassetfunc("rent/assets/MoreButton3.png")
 	optionsbutton.Parent = windowtitle
 	local children = Instance.new("Frame")
 	children.BackgroundTransparency = 1
@@ -1474,7 +1474,7 @@ api["CreateCustomWindow"] = function(name, icon, iconsize, position, visible)
 		slider3.Size = UDim2.new(0, 24, 0, 16)
 		slider3.BackgroundColor3 = Color3.fromRGB(26, 25, 26)
 		slider3.BorderSizePixel = 0
-		slider3.Image = getcustomassetfunc("vape/assets/SliderButton1.png")
+		slider3.Image = getcustomassetfunc("rent/assets/SliderButton1.png")
 		slider3.Position = UDim2.new(0.44, -11, 0, -7)
 		slider3.Parent = slider1
 		slider3.Name = "ButtonSlider"
@@ -1499,7 +1499,7 @@ api["CreateCustomWindow"] = function(name, icon, iconsize, position, visible)
 						else
 							coroutine.yield(heh)
 						end
-					until sliderapi["RainbowValue"] == false or shared.VapeExecuted == nil
+					until sliderapi["RainbowValue"] == false or shared.rentExecuted == nil
 				end))
 			end
 		end
@@ -1702,7 +1702,7 @@ api["CreateWindow"] = function(name, icon, iconsize, position, visible)
 			currentexpandedbutton["ExpandToggle"]()
 		end
 	end)
-	windowbackbutton.Image = getcustomassetfunc("vape/assets/BackIcon.png")
+	windowbackbutton.Image = getcustomassetfunc("rent/assets/BackIcon.png")
 	windowbackbutton.Parent = windowtitle
 	local windowtext = Instance.new("TextLabel")
 	windowtext.Size = UDim2.new(0, 155, 0, 41)
@@ -1718,7 +1718,7 @@ api["CreateWindow"] = function(name, icon, iconsize, position, visible)
 	local expandbutton = Instance.new("ImageButton")
 	expandbutton.Active = true
 	expandbutton.Size = UDim2.new(0, 9, 0, 4)
-	expandbutton.Image = getcustomassetfunc("vape/assets/UpArrow.png")
+	expandbutton.Image = getcustomassetfunc("rent/assets/UpArrow.png")
 	expandbutton.Position = UDim2.new(1, -20, 0, 19)
 	expandbutton.Name = "ExpandButton"
 	expandbutton.BackgroundTransparency = 1
@@ -1793,7 +1793,7 @@ api["CreateWindow"] = function(name, icon, iconsize, position, visible)
 		button2.Size = UDim2.new(0, 3, 0, 16)
 		button2.Position = UDim2.new(1, -21, 0, 12)
 		button2.Name = "OptionsButton"
-		button2.Image = getcustomassetfunc("vape/assets/MoreButton1.png")
+		button2.Image = getcustomassetfunc("rent/assets/MoreButton1.png")
 		button2.Parent = button
 		local buttontext = Instance.new("TextLabel")
 		buttontext.BackgroundTransparency = 1
@@ -1831,7 +1831,7 @@ api["CreateWindow"] = function(name, icon, iconsize, position, visible)
 		bindbkg.Visible = false
 		bindbkg.Parent = button
 		local bindimg = Instance.new("ImageLabel")
-		bindimg.Image = getcustomassetfunc("vape/assets/KeybindIcon.png")
+		bindimg.Image = getcustomassetfunc("rent/assets/KeybindIcon.png")
 		bindimg.BackgroundTransparency = 1
 		bindimg.ImageTransparency = 0.2
 		bindimg.Size = UDim2.new(0, 12, 0, 12)
@@ -1909,13 +1909,13 @@ api["CreateWindow"] = function(name, icon, iconsize, position, visible)
 				button.BackgroundColor3 = Color3.fromHSV(api["Settings"]["GUIObject"]["Color"], 0.7, 0.9)
 				currenttween:Cancel()
 				buttonactiveborder.Visible = true
-				button2.Image = getcustomassetfunc("vape/assets/MoreButton2.png")
+				button2.Image = getcustomassetfunc("rent/assets/MoreButton2.png")
 				buttontext.TextColor3 = Color3.new(0, 0, 0)
 				temporaryfunction()
 			else
 				button.BackgroundColor3 = Color3.fromRGB(26, 25, 26)
 				buttonactiveborder.Visible = false
-				button2.Image = getcustomassetfunc("vape/assets/MoreButton1.png")
+				button2.Image = getcustomassetfunc("rent/assets/MoreButton1.png")
 				buttontext.TextColor3 = Color3.fromRGB(162, 162, 162)
 				temporaryfunction2()
 			end
@@ -1966,7 +1966,7 @@ api["CreateWindow"] = function(name, icon, iconsize, position, visible)
 			textboxbkg.Size = UDim2.new(0, 200, 0, 31)
 			textboxbkg.Position = UDim2.new(0, 10, 0, 5)
 			textboxbkg.ClipsDescendants = true
-			textboxbkg.Image = getcustomassetfunc("vape/assets/TextBoxBKG.png")
+			textboxbkg.Image = getcustomassetfunc("rent/assets/TextBoxBKG.png")
 			textboxbkg.Parent = frame
 			local textbox = Instance.new("TextBox")
 			textbox.Size = UDim2.new(0, 159, 1, 0)
@@ -1989,7 +1989,7 @@ api["CreateWindow"] = function(name, icon, iconsize, position, visible)
 			addbutton.AutoButtonColor = false
 			addbutton.Size = UDim2.new(0, 16, 0, 16)
 			addbutton.ImageColor3 = Color3.fromHSV(0.44, 1, 1)
-			addbutton.Image = getcustomassetfunc("vape/assets/AddItem.png")
+			addbutton.Image = getcustomassetfunc("rent/assets/AddItem.png")
 			addbutton.Parent = textboxbkg
 			local scrollframebkg = Instance.new("Frame")
 			scrollframebkg.ZIndex = 2
@@ -2051,7 +2051,7 @@ api["CreateWindow"] = function(name, icon, iconsize, position, visible)
 					deletebutton.BackgroundTransparency = 1
 					deletebutton.AutoButtonColor = false
 					deletebutton.ZIndex = 2
-					deletebutton.Image = getcustomassetfunc("vape/assets/AddRemoveIcon1.png")
+					deletebutton.Image = getcustomassetfunc("rent/assets/AddRemoveIcon1.png")
 					deletebutton.Position = UDim2.new(1, -16, 0, 14)
 					deletebutton.Parent = itemframe
 					deletebutton.MouseButton1Click:connect(function()
@@ -2223,7 +2223,7 @@ api["CreateWindow"] = function(name, icon, iconsize, position, visible)
 			slider3.Size = UDim2.new(0, 24, 0, 16)
 			slider3.BackgroundColor3 = Color3.fromRGB(25, 26, 25)
 			slider3.BorderSizePixel = 0
-			slider3.Image = getcustomassetfunc("vape/assets/SliderButton1.png")
+			slider3.Image = getcustomassetfunc("rent/assets/SliderButton1.png")
 			slider3.Position = UDim2.new(0.44, -11, 0, -7)
 			slider3.Parent = slider1
 			slider3.Name = "ButtonSlider"
@@ -2248,7 +2248,7 @@ api["CreateWindow"] = function(name, icon, iconsize, position, visible)
 							else
 								coroutine.yield(heh)
 							end
-						until sliderapi["RainbowValue"] == false or shared.VapeExecuted == nil
+						until sliderapi["RainbowValue"] == false or shared.rentExecuted == nil
 					end))
 				end
 			end
@@ -2360,7 +2360,7 @@ api["CreateWindow"] = function(name, icon, iconsize, position, visible)
 			slider3.Size = UDim2.new(0, 24, 0, 16)
 			slider3.BackgroundColor3 = Color3.fromRGB(25, 26, 25)
 			slider3.BorderSizePixel = 0
-			slider3.Image = getcustomassetfunc("vape/assets/SliderButton1.png")
+			slider3.Image = getcustomassetfunc("rent/assets/SliderButton1.png")
 			slider3.Position = UDim2.new(1, -11, 0, -7)
 			slider3.Parent = slider2
 			slider3.Name = "ButtonSlider"
@@ -2442,7 +2442,7 @@ api["CreateWindow"] = function(name, icon, iconsize, position, visible)
 			text3.Parent = frame
 			local text4 = Instance.new("ImageLabel")
 			text4.Size = UDim2.new(0, 12, 0, 6)
-			text4.Image = getcustomassetfunc("vape/assets/SliderArrowSeperator.png")
+			text4.Image = getcustomassetfunc("rent/assets/SliderArrowSeperator.png")
 			text4.BackgroundTransparency = 1
 			text4.Position = UDim2.new(0, 154, 0, 10)
 			text4.Parent = frame
@@ -2463,7 +2463,7 @@ api["CreateWindow"] = function(name, icon, iconsize, position, visible)
 			slider3.Size = UDim2.new(0, 16, 0, 16)
 			slider3.BackgroundColor3 = Color3.fromRGB(25, 26, 25)
 			slider3.BorderSizePixel = 0
-			slider3.Image = getcustomassetfunc("vape/assets/SliderArrow1.png")
+			slider3.Image = getcustomassetfunc("rent/assets/SliderArrow1.png")
 			slider3.Position = UDim2.new(1, -8, 1, -9)
 			slider3.Parent = slider1
 			slider3.Name = "ButtonSlider"
@@ -2671,14 +2671,14 @@ api["CreateWindow"] = function(name, icon, iconsize, position, visible)
 			end
 		end)
 		bindbkg.MouseEnter:connect(function() 
-			bindimg.Image = getcustomassetfunc("vape/assets/PencilIcon.png") 
+			bindimg.Image = getcustomassetfunc("rent/assets/PencilIcon.png") 
 			bindimg.Visible = true
 			bindtext.Visible = false
 			bindbkg.Size = UDim2.new(0, 20, 0, 21)
 			bindbkg.Position = UDim2.new(1, -56, 0, 9)
 		end)
 		bindbkg.MouseLeave:connect(function() 
-			bindimg.Image = getcustomassetfunc("vape/assets/KeybindIcon.png")
+			bindimg.Image = getcustomassetfunc("rent/assets/KeybindIcon.png")
 			if buttonapi["Keybind"] ~= "" then
 				bindimg.Visible = false
 				bindtext.Visible = true
@@ -2730,7 +2730,7 @@ api["CreateWindow2"] = function(name, icon, iconsize, position, visible)
 	local expandbutton = Instance.new("ImageButton")
 	expandbutton.Active = true
 	expandbutton.Size = UDim2.new(0, 9, 0, 4)
-	expandbutton.Image = getcustomassetfunc("vape/assets/UpArrow.png")
+	expandbutton.Image = getcustomassetfunc("rent/assets/UpArrow.png")
 	expandbutton.Position = UDim2.new(1, -20, 0, 19)
 	expandbutton.Name = "ExpandButton"
 	expandbutton.BackgroundTransparency = 1
@@ -2739,7 +2739,7 @@ api["CreateWindow2"] = function(name, icon, iconsize, position, visible)
 	local settingsbutton = Instance.new("ImageButton")
 	settingsbutton.Active = true
 	settingsbutton.Size = UDim2.new(0, 16, 0, 16)
-	settingsbutton.Image = getcustomassetfunc("vape/assets/SettingsWheel2.png")
+	settingsbutton.Image = getcustomassetfunc("rent/assets/SettingsWheel2.png")
 	settingsbutton.Position = UDim2.new(1, -53, 0, 13)
 	settingsbutton.Name = "OptionsButton"
 	settingsbutton.BackgroundTransparency = 1
@@ -2855,7 +2855,7 @@ api["CreateWindow2"] = function(name, icon, iconsize, position, visible)
 		slider3.Size = UDim2.new(0, 24, 0, 16)
 		slider3.BackgroundColor3 = Color3.fromRGB(25, 26, 25)
 		slider3.BorderSizePixel = 0
-		slider3.Image = getcustomassetfunc("vape/assets/SliderButton1.png")
+		slider3.Image = getcustomassetfunc("rent/assets/SliderButton1.png")
 		slider3.Position = UDim2.new(0.44, -11, 0, -7)
 		slider3.Parent = slider1
 		slider3.Name = "ButtonSlider"
@@ -2880,7 +2880,7 @@ api["CreateWindow2"] = function(name, icon, iconsize, position, visible)
 						else
 							coroutine.yield(heh)
 						end
-					until sliderapi["RainbowValue"] == false or shared.VapeExecuted == nil
+					until sliderapi["RainbowValue"] == false or shared.rentExecuted == nil
 				end))
 			end
 		end
@@ -3025,7 +3025,7 @@ api["CreateWindow2"] = function(name, icon, iconsize, position, visible)
 		end)
 
 		
-		api["ObjectsThatCanBeSaved"][(compatability or "VapeSettings")..name.."Toggle"] = {["Type"] = "Toggle", ["Object"] = buttontext, ["Api"] = buttonapi}
+		api["ObjectsThatCanBeSaved"][(compatability or "rentSettings")..name.."Toggle"] = {["Type"] = "Toggle", ["Object"] = buttontext, ["Api"] = buttonapi}
 		return buttonapi
 	end
 
@@ -3045,7 +3045,7 @@ api["CreateWindow2"] = function(name, icon, iconsize, position, visible)
 		textboxbkg.Size = UDim2.new(0, 200, 0, 31)
 		textboxbkg.Position = UDim2.new(0, 10, 0, 5)
 		textboxbkg.ClipsDescendants = true
-		textboxbkg.Image = getcustomassetfunc("vape/assets/TextBoxBKG.png")
+		textboxbkg.Image = getcustomassetfunc("rent/assets/TextBoxBKG.png")
 		textboxbkg.Parent = frame
 		local textbox = Instance.new("TextBox")
 		textbox.Size = UDim2.new(0, 159, 1, 0)
@@ -3068,7 +3068,7 @@ api["CreateWindow2"] = function(name, icon, iconsize, position, visible)
 		addbutton.AutoButtonColor = false
 		addbutton.Size = UDim2.new(0, 16, 0, 16)
 		addbutton.ImageColor3 = Color3.fromHSV(0.44, 1, 1)
-		addbutton.Image = getcustomassetfunc("vape/assets/AddItem.png")
+		addbutton.Image = getcustomassetfunc("rent/assets/AddItem.png")
 		addbutton.Parent = textboxbkg
 		local scrollframebkg = Instance.new("Frame")
 		scrollframebkg.ZIndex = 2
@@ -3130,7 +3130,7 @@ api["CreateWindow2"] = function(name, icon, iconsize, position, visible)
 				deletebutton.BackgroundTransparency = 1
 				deletebutton.AutoButtonColor = false
 				deletebutton.ZIndex = 2
-				deletebutton.Image = getcustomassetfunc("vape/assets/AddRemoveIcon1.png")
+				deletebutton.Image = getcustomassetfunc("rent/assets/AddRemoveIcon1.png")
 				deletebutton.Position = UDim2.new(1, -16, 0, 14)
 				deletebutton.Parent = itemframe
 				deletebutton.MouseButton1Click:connect(function()
@@ -3190,7 +3190,7 @@ api["CreateNotification"] = function(top, bottom, duration, customicon)
 		uicorner2.Parent = frame2
 		local icon = Instance.new("ImageLabel")
 		icon.Name = "IconLabel"
-		icon.Image = getcustomassetfunc(customicon or "vape/assets/InfoNotification.png")
+		icon.Image = getcustomassetfunc(customicon or "rent/assets/InfoNotification.png")
 		icon.BackgroundTransparency = 1
 		icon.Position = UDim2.new(0, -6, 0, -8)
 		icon.Size = UDim2.new(0, 60, 0, 60)
