@@ -5,7 +5,7 @@ local lplr = players.LocalPlayer
 local workspace = game:GetService("Workspace")
 local lighting = game:GetService("Lighting")
 local cam = workspace.CurrentCamera
-local targetinfo = shared.VapeTargetInfo
+local targetinfo = shared.rentTargetInfo
 local uis = game:GetService("UserInputService")
 local mouse = lplr:GetMouse()
 local robloxfriends = {}
@@ -33,7 +33,7 @@ getfunctions = function()
 		end
 	end
 
-	if (bedwars["Client"] and bedwars["ClientStore"] and bedwars["sprintTable"]) or (not shared.VapeExecuted) then
+	if (bedwars["Client"] and bedwars["ClientStore"] and bedwars["sprintTable"]) or (not shared.rentExecuted) then
 
 	else
 		wait(1)
