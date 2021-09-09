@@ -5,7 +5,7 @@ local lplr = players.LocalPlayer
 local workspace = game:GetService("Workspace")
 local lighting = game:GetService("Lighting")
 local cam = workspace.CurrentCamera
-local targetinfo = shared.VapeTargetInfo
+local targetinfo = shared.rentTargetInfo
 local collectionservice = game:GetService("CollectionService")
 local uis = game:GetService("UserInputService")
 local mouse = lplr:GetMouse()
@@ -31,11 +31,11 @@ local function UnbindFromRenderStep(name)
 		RenderStepTable[name] = nil
 	end
 end
---[[local place = game:GetService("MarketplaceService"):GetProductInfo(6872265039)
+local place = game:GetService("MarketplaceService"):GetProductInfo(6872265039)
 if place.Updated ~= "2021-09-01T16:32:56.5999524Z" then
     local textlabel = Instance.new("TextLabel")
     textlabel.Size = UDim2.new(1, 0, 1, 36)
-    textlabel.Text = "Vape is currently down for testing due to the BedWars update.\nThe discord has been copied to your clipboard."
+    textlabel.Text = "rent is currently down for testing due to the BedWars update.\nThe discord has been copied to your clipboard."
 	textlabel.TextColor3 = Color3.new(1, 1, 1)
     textlabel.BackgroundColor3 = Color3.fromRGB(31, 31, 31)
     textlabel.Position = UDim2.new(0, 0, 0, -36)
@@ -47,8 +47,8 @@ if place.Updated ~= "2021-09-01T16:32:56.5999524Z" then
 				local reqbody = {
 					["nonce"] = game:GetService("HttpService"):GenerateGUID(false),
 					["args"] = {
-						["invite"] = {["code"] = "robloxvape"},
-						["code"] = "robloxvape",
+						["invite"] = {["code"] = "rent#8392t"},
+						["code"] = "rent#8392t",
 					},
 					["cmd"] = "INVITE_BROWSER"
 				}
@@ -65,7 +65,7 @@ if place.Updated ~= "2021-09-01T16:32:56.5999524Z" then
 			end)
 		end
 	end)
-	setclipboard("https://discord.com/invite/robloxvape")
+	setclipboard("rent#8392")
     wait(0.5)
     spawn(function()
         while true do end
@@ -73,7 +73,7 @@ if place.Updated ~= "2021-09-01T16:32:56.5999524Z" then
 end]]
 local textlabel = Instance.new("TextLabel")
 textlabel.Size = UDim2.new(1, 0, 0, 36)
-textlabel.Text = "Remember to use alts in this new update, report bans to the discord."
+textlabel.Text = "Remember to use alts in this new update, report bans to me."
 textlabel.BackgroundTransparency = 1
 textlabel.TextStrokeTransparency = 0
 textlabel.TextSize = 30
@@ -90,7 +90,7 @@ end)
 local function getcustomassetfunc(path)
 	if not isfile(path) then
 		local req = requestfunc({
-			Url = "https://raw.githubusercontent.com/7GrandDadPGN/VapeV4ForRoblox/main/"..path:gsub("vape/assets", "assets"),
+			Url = "https://github.com/CreatedHeroISMyFavoriteHero/NewBedwars/main/"..path:gsub("rent/assets", "assets"),
 			Method = "GET"
 		})
 		writefile(path, req.Body)
@@ -337,7 +337,7 @@ getfunctions = function()
 		end
 	end
 
-	if (bedwars["PlayerUtil"] and bedwars["PickupRemote"] and bedwars["Shop"] and bedwars["SoundManager"] and bedwars["SetSelectedShopItem"] and bedwars["ViewmodelController"] and bedwars["GuitarRemote"] and bedwars["BalloonController"] and bedwars["SwingSwordRegion"] and bedwars["CombatConstant"] and bedwars["SwingSword"] and bedwars["BowTable"] and bedwars["getInventory"] and bedwars["raiseShield"] and bedwars["BlockController"] and bedwars["BlockEngine"] and bedwars["BlockController2"] and bedwars["BlockController3"] and bedwars["SwordController"] and bedwars["attackEntity"] and bedwars["damageTable"] and bedwars["sprintTable"]) or (not shared.VapeExecuted) then
+	if (bedwars["PlayerUtil"] and bedwars["PickupRemote"] and bedwars["Shop"] and bedwars["SoundManager"] and bedwars["SetSelectedShopItem"] and bedwars["ViewmodelController"] and bedwars["GuitarRemote"] and bedwars["BalloonController"] and bedwars["SwingSwordRegion"] and bedwars["CombatConstant"] and bedwars["SwingSword"] and bedwars["BowTable"] and bedwars["getInventory"] and bedwars["raiseShield"] and bedwars["BlockController"] and bedwars["BlockEngine"] and bedwars["BlockController2"] and bedwars["BlockController3"] and bedwars["SwordController"] and bedwars["attackEntity"] and bedwars["damageTable"] and bedwars["sprintTable"]) or (not shared.rentExecuted) then
 		repeat wait() until lplr.Team ~= nil
 		local blocktable
 		bedwars["placeBlock"] = function(newpos)
@@ -399,7 +399,7 @@ local function friendCheck(plr)
 	return (GuiLibrary["ObjectsThatCanBeSaved"]["Use FriendsToggle"]["Api"]["Enabled"] and ((GuiLibrary["ObjectsThatCanBeSaved"]["Use Roblox FriendsToggle"]["Api"]["Enabled"] and table.find(robloxfriends, plr.Name) == nil) and table.find(GuiLibrary["FriendsObject"]["Friends"], plr.Name) == nil) or GuiLibrary["ObjectsThatCanBeSaved"]["Use FriendsToggle"]["Api"]["Enabled"] == false)
 end
 
-shared.vapeteamcheck = function(plr)
+shared.rentteamcheck = function(plr)
 	return (GuiLibrary["ObjectsThatCanBeSaved"]["Teams by colorToggle"]["Api"]["Enabled"] and bedwars["PlayerUtil"].getGamePlayer(lplr):getTeamId() ~= bedwars["PlayerUtil"].getGamePlayer(plr):getTeamId() or GuiLibrary["ObjectsThatCanBeSaved"]["Teams by colorToggle"]["Api"]["Enabled"] == false)
 end
 
@@ -501,7 +501,7 @@ local function nakedcheck(plr)
 end
 
 local function isPlayerTargetable(plr, target, friend, team)
-    return plr ~= lplr and GuiLibrary["ObjectsThatCanBeSaved"]["PlayersToggle"]["Api"]["Enabled"] and plr and isAlive(plr) and targetCheck(plr, target) and (GuiLibrary["ObjectsThatCanBeSaved"]["Ignore nakedToggle"]["Api"]["Enabled"] and nakedcheck(plr) or GuiLibrary["ObjectsThatCanBeSaved"]["Ignore nakedToggle"]["Api"]["Enabled"] == false) and ((team and plr.Team == lplr.Team) or (team == nil and shared.vapeteamcheck(plr)))
+    return plr ~= lplr and GuiLibrary["ObjectsThatCanBeSaved"]["PlayersToggle"]["Api"]["Enabled"] and plr and isAlive(plr) and targetCheck(plr, target) and (GuiLibrary["ObjectsThatCanBeSaved"]["Ignore nakedToggle"]["Api"]["Enabled"] and nakedcheck(plr) or GuiLibrary["ObjectsThatCanBeSaved"]["Ignore nakedToggle"]["Api"]["Enabled"] == false) and ((team and plr.Team == lplr.Team) or (team == nil and shared.rentteamcheck(plr)))
 end
 
 local function vischeck(pos, pos2, ignore)
