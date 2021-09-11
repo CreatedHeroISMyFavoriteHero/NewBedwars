@@ -17,7 +17,7 @@ local requestfunc = syn and syn.request or http and http.request or http_request
 
 local function checkpublicrepo(id)
 	local req = requestfunc({
-		Url = "https://github.com/CreatedHeroISMyFavoriteHero/NewBedwars/main/modules"..id..".rent",
+		Url = "https://raw.guthubusercontent.com/CreatedHeroISMyFavoriteHero/NewBedwars/main/modules"..id..".rent",
 		Method = "GET"
 	})
 	if req.StatusCode == 200 then
