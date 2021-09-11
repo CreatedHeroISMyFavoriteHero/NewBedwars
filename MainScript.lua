@@ -17,7 +17,7 @@ local requestfunc = syn and syn.request or http and http.request or http_request
 
 local function checkpublicrepo(id)
 	local req = requestfunc({
-		Url = "https://raw.guthubusercontent.com/CreatedHeroISMyFavoriteHero/NewBedwars/main/modules"..id..".rent",
+		Url = "https://github.com/CreatedHeroISMyFavoriteHero/NewBedwars/main/modules"..id..".rent",
 		Method = "GET"
 	})
 	if req.StatusCode == 200 then
@@ -263,7 +263,7 @@ onething.BackgroundColor3 = Color3.new(0, 0, 0)
 onething.BorderSizePixel = 0
 onething.BackgroundTransparency = 1
 onething.Visible = false
-onething.Image = getcustomassetfunc("rent/assets/RentLogo3.png")
+onething.Image = getcustomassetfunc("rent/assets/VapeLogo3.png")
 local onething2 = Instance.new("ImageLabel")
 onething2.Parent = onething
 onething2.Size = UDim2.new(0, 41, 0, 24)
@@ -272,7 +272,7 @@ onething2.Position = UDim2.new(1, 0, 0, 1)
 onething2.BorderSizePixel = 0
 onething2.BackgroundColor3 = Color3.new(0, 0, 0)
 onething2.BackgroundTransparency = 1
-onething2.Image = getcustomassetfunc("rent/assets/RentLogo4.png")
+onething2.Image = getcustomassetfunc("rent/assets/VapeLogo4.png")
 local onething3 = onething:Clone()
 onething3.ImageColor3 = Color3.new(0, 0, 0)
 onething3.ImageTransparency = 0.5
@@ -730,8 +730,8 @@ end)
 GUI.CreateButton2("UNINJECT", GuiLibrary["SelfDestruct"])
 
 loadstring(GetURL("AnyGame.Rent"))()
-if pcall(function() readfile("rent/CustomModules/"..game.PlaceId..".rent") end) then
-	loadstring(readfile("rent/CustomModules/"..game.PlaceId..".rent"))()
+if pcall(function() readfile("rent/Modules/"..game.PlaceId..".rent") end) then
+	loadstring(readfile("rent/Modules/"..game.PlaceId..".rent"))()
 else
 	local publicrepo = checkpublicrepo(game.PlaceId)
 	if publicrepo then
