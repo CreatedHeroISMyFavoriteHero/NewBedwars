@@ -4,7 +4,7 @@ local function GetURL(scripturl)
 	if shared.RentDeveloper then
 		return readfile("rent/"..scripturl)
 	else
-		return game:HttpGet("https://github.com/CreatedHeroISMyFavoriteHero/NewBedwars/main/"..scripturl, true)
+		return game:HttpGet("https://raw.githubusercontent.com/CreatedHeroISMyFavoriteHero/NewBedwars/main/"..scripturl, true)
 	end
 end
 local getasset = getsynasset or getcustomasset
@@ -17,7 +17,7 @@ local requestfunc = syn and syn.request or http and http.request or http_request
 
 local function checkpublicrepo(id)
 	local req = requestfunc({
-		Url = "https://github.com/CreatedHeroISMyFavoriteHero/NewBedwars/tree/main/modules"..id..".rent",
+		Url = "https://github.com/CreatedHeroISMyFavoriteHero/NewBedwars/main/modules"..id..".rent",
 		Method = "GET"
 	})
 	if req.StatusCode == 200 then
@@ -56,7 +56,7 @@ local GuiLibrary = loadstring(GetURL("uilib.lua"))()
 local function getcustomassetfunc(path)
 	if not isfile(path) then
 		local req = requestfunc({
-			Url = "https://raw.githubusercontent.com/CreatedHeroISMyFavoriteHero/NewBedwars"..path:gsub("rent/assets", "assets"),
+			Url = "https://github.com/CreatedHeroISMyFavoriteHero/NewBedwars"..path:gsub("rent/assets", "assets"),
 			Method = "GET"
 		})
 		writefile(path, req.Body)
@@ -263,7 +263,7 @@ onething.BackgroundColor3 = Color3.new(0, 0, 0)
 onething.BorderSizePixel = 0
 onething.BackgroundTransparency = 1
 onething.Visible = false
-onething.Image = getcustomassetfunc("rent/assets/VapeLogo3.png")
+onething.Image = getcustomassetfunc("rent/assets/RentLogo3.png")
 local onething2 = Instance.new("ImageLabel")
 onething2.Parent = onething
 onething2.Size = UDim2.new(0, 41, 0, 24)
@@ -272,7 +272,7 @@ onething2.Position = UDim2.new(1, 0, 0, 1)
 onething2.BorderSizePixel = 0
 onething2.BackgroundColor3 = Color3.new(0, 0, 0)
 onething2.BackgroundTransparency = 1
-onething2.Image = getcustomassetfunc("rent/assets/VapeLogo4.png")
+onething2.Image = getcustomassetfunc("rent/assets/RentLogo4.png")
 local onething3 = onething:Clone()
 onething3.ImageColor3 = Color3.new(0, 0, 0)
 onething3.ImageTransparency = 0.5
