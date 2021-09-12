@@ -1,10 +1,10 @@
 repeat wait() until game:IsLoaded() == true
 
 local function GetURL(scripturl)
-	if shared.RentDeveloper then
+	if shared.rentDeveloper then
 		return readfile("rent/"..scripturl)
 	else
-		return game:HttpGet("https://raw.githubusercontent.com/CreatedHeroISMyFavoriteHero/NewBedwars/main/"..scripturl, true)
+		return game:HttpGet("https://raw.githubusercontent.com/CreatedHeroISMyFavoriteHero/NewBedwars"..scripturl, true)
 	end
 end
 local getasset = getsynasset or getcustomasset
@@ -26,53 +26,78 @@ local function checkpublicrepo(id)
 	return nil
 end
 
+local function checkassetversion()
+	local req = requestfunc({
+		Url = "https://raw.githubusercontent.com/CreatedHeroISMyFavoriteHero/NewBedwars/main/assetversion.dat",
+		Method = "GET"
+	})
+	if req.StatusCode == 200 then
+		return req.Body
+	else
+		return nil
+	end
+end
+
 if not (getasset and requestfunc and queueteleport) then
-	print("This script does not support your exploit.")
+	print("rent not supported with your exploit.")
 	return
 end
 
-if shared.RentExecuted then
-	error(" Already Injected")
+if shared.rentExecuted then
+	error("rent Already Injected")
 	return
 else
-	shared.RentExecuted = true
+	shared.rentExecuted = true
 end
 
 if isfolder("rent") == false then
 	makefolder("rent")
 end
-if isfolder("rent/modules") == false then
-	makefolder("rent/modules")
+if isfile("rent/assetsversion.dat") == false then
+	writefile("rent/assetsversion.dat", "1")
 end
-if isfolder("rent/profiles") == false then
-	makefolder("rent/profiles")
+if isfolder("rent/CustomModules") == false then
+	makefolder("rent/CustomModules")
+end
+if isfolder("rent/Profiles") == false then
+	makefolder("rent/Profiles")
+end
+local assetver = checkassetversion()
+if assetver and assetver > readfile("rent/assetsversion.dat") then
+	if shared.rentDeveloper == nil then
+		if isfolder("rent/assets") then
+			delfolder("rent/assets")
+		end
+		writefile("rent/assetsversion.dat", assetver)
+	end
 end
 if isfolder("rent/assets") == false then
 	makefolder("rent/assets")
 end
 
-local GuiLibrary = loadstring(GetURL("uilib.lua"))()
+local GuiLibrary = loadstring(GetURL("NewGuiLibrary.lua"))()
 
 local function getcustomassetfunc(path)
 	if not isfile(path) then
+		spawn(function()
+			local textlabel = Instance.new("TextLabel")
+			textlabel.Size = UDim2.new(1, 0, 0, 36)
+			textlabel.Text = "Downloading "..path
+			textlabel.BackgroundTransparency = 1
+			textlabel.TextStrokeTransparency = 0
+			textlabel.TextSize = 30
+			textlabel.Font = Enum.Font.SourceSans
+			textlabel.TextColor3 = Color3.new(1, 1, 1)
+			textlabel.Position = UDim2.new(0, 0, 0, -36)
+			textlabel.Parent = GuiLibrary["MainGui"]
+			repeat wait() until isfile(path)
+			textlabel:Remove()
+		end)
 		local req = requestfunc({
-			Url = "https://github.com/CreatedHeroISMyFavoriteHero/NewBedwars"..path:gsub("rent/assets", "assets"),
+			Url = "https://raw.githubusercontent.com/7GrandDadPGN/rentV4ForRoblox/main/"..path:gsub("rent/assets", "assets"),
 			Method = "GET"
 		})
 		writefile(path, req.Body)
-	end
-	if not isfile(path) then
-		local textlabel = Instance.new("TextLabel")
-		textlabel.Size = UDim2.new(1, 0, 0, 36)
-		textlabel.Text = "Downloading "..path
-		textlabel.BackgroundTransparency = 1
-		textlabel.TextStrokeTransparency = 0
-		textlabel.TextSize = 30
-		textlabel.TextColor3 = Color3.new(1, 1, 1)
-		textlabel.Position = UDim2.new(0, 0, 0, -36)
-		textlabel.Parent = GuiLibrary["MainGui"]
-		repeat wait() until isfile(path)
-		textlabel:Remove()
 	end
 	return getasset(path) 
 end
@@ -87,7 +112,7 @@ local Blatant = GuiLibrary.CreateWindow("Blatant", "rent/assets/BlatantIcon.png"
 local Render = GuiLibrary.CreateWindow("Render", "rent/assets/RenderIcon.png", 17, UDim2.new(0, 223, 0, 6), false)
 local Utility = GuiLibrary.CreateWindow("Utility", "rent/assets/UtilityIcon.png", 17, UDim2.new(0, 223, 0, 6), false)
 local World = GuiLibrary.CreateWindow("World", "rent/assets/WorldIcon.png", 16, UDim2.new(0, 223, 0, 6), false)
-local Friends = GuiLibrary.CreateWindow2("Rent#8392", "rent/assets/FriendsIcon.png", 17, UDim2.new(0, 177, 0, 6), false)
+local Friends = GuiLibrary.CreateWindow2("Friends", "rent/assets/FriendsIcon.png", 17, UDim2.new(0, 177, 0, 6), false)
 local Profiles = GuiLibrary.CreateWindow2("Profiles", "rent/assets/ProfilesIcon.png", 19, UDim2.new(0, 177, 0, 6), false)
 GUI.CreateDivider()
 GUI.CreateButton("Combat", function() Combat.SetVisible(true) end, function() Combat.SetVisible(false) end, "rent/assets/CombatIcon.png", 15)
@@ -96,7 +121,7 @@ GUI.CreateButton("Render", function() Render.SetVisible(true) end, function() Re
 GUI.CreateButton("Utility", function() Utility.SetVisible(true) end, function() Utility.SetVisible(false) end, "rent/assets/UtilityIcon.png", 17)
 GUI.CreateButton("World", function() World.SetVisible(true) end, function() World.SetVisible(false) end, "rent/assets/WorldIcon.png", 16)
 GUI.CreateDivider("MISC")
-GUI.CreateButton("Rent#8392", function() Friends.SetVisible(true) end, function() Friends.SetVisible(false) end)
+GUI.CreateButton("Friends", function() Friends.SetVisible(true) end, function() Friends.SetVisible(false) end)
 GUI.CreateButton("Profiles", function() Profiles.SetVisible(true) end, function() Profiles.SetVisible(false) end)
 local FriendsTextList = {["RefreshValues"] = function() end}
 FriendsTextList = Friends.CreateTextList("FriendsList", "Username / Alias", function(user) end, function(num) end, function(obj)
@@ -155,7 +180,7 @@ end, function(obj, profilename)
 		bindbkg.Visible = true
 		bindbkg.Parent = obj
 		local bindimg = Instance.new("ImageLabel")
-		bindimg.Image = getcustomassetfunc("Rent/assets/KeybindIcon.png")
+		bindimg.Image = getcustomassetfunc("rent/assets/KeybindIcon.png")
 		bindimg.BackgroundTransparency = 1
 		bindimg.Size = UDim2.new(0, 12, 0, 12)
 		bindimg.Position = UDim2.new(0, 4, 0, 5)
@@ -219,14 +244,14 @@ end, function(obj, profilename)
 			end
 		end)
 		bindbkg.MouseEnter:connect(function() 
-			bindimg.Image = getcustomassetfunc("Rent/assets/PencilIcon.png") 
+			bindimg.Image = getcustomassetfunc("rent/assets/PencilIcon.png") 
 			bindimg.Visible = true
 			bindtext.Visible = false
 			bindbkg.Size = UDim2.new(0, 20, 0, 21)
 			bindbkg.Position = UDim2.new(1, -50, 0, 6)
 		end)
 		bindbkg.MouseLeave:connect(function() 
-			bindimg.Image = getcustomassetfunc("Rent/assets/KeybindIcon.png")
+			bindimg.Image = getcustomassetfunc("rent/assets/KeybindIcon.png")
 			if GuiLibrary["Profiles"][profilename]["Keybind"] ~= "" then
 				bindimg.Visible = false
 				bindtext.Visible = true
@@ -243,10 +268,10 @@ end, function(obj, profilename)
 		end
 end)
 GUI.CreateDivider()
----GUI.CreateCustomButton("Favorites", "Rent/assets/FavoritesListIcon.png", UDim2.new(0, 17, 0, 14), function() end, function() end)
---GUI.CreateCustomButton("Text GUIVertical", "Rent/assets/TextGUIIcon3.png", UDim2.new(1, -56, 0, 15), function() end, function() end)
+---GUI.CreateCustomButton("Favorites", "rent/assets/FavoritesListIcon.png", UDim2.new(0, 17, 0, 14), function() end, function() end)
+--GUI.CreateCustomButton("Text GUIVertical", "rent/assets/TextGUIIcon3.png", UDim2.new(1, -56, 0, 15), function() end, function() end)
 local TextGui = GuiLibrary.CreateCustomWindow("Text GUI", "rent/assets/TextGUIIcon1.png", 21, UDim2.new(0, 177, 0, 6), false)
---GUI.CreateCustomButton("Text GUI", "Rent/assets/TextGUIIcon2.png", UDim2.new(1, -23, 0, 15), function() TextGui.SetVisible(true) end, function() TextGui.SetVisible(false) end, "OptionsButton")
+--GUI.CreateCustomButton("Text GUI", "rent/assets/TextGUIIcon2.png", UDim2.new(1, -23, 0, 15), function() TextGui.SetVisible(true) end, function() TextGui.SetVisible(false) end, "OptionsButton")
 GUI.CreateCustomToggle("Text GUI", "rent/assets/TextGUIIcon3.png", function() TextGui.SetVisible(true) end, function() TextGui.SetVisible(false) end, false, "OptionsButton", 2)
 
 local rainbowval = ColorSequence.new({ColorSequenceKeypoint.new(0, Color3.fromHSV(0, 0, 1)), ColorSequenceKeypoint.new(1, Color3.fromHSV(0, 0, 1))})
@@ -263,7 +288,7 @@ onething.BackgroundColor3 = Color3.new(0, 0, 0)
 onething.BorderSizePixel = 0
 onething.BackgroundTransparency = 1
 onething.Visible = false
-onething.Image = getcustomassetfunc("rent/assets/VapeLogo3.png")
+onething.Image = getcustomassetfunc("rent/assets/rentLogo3.png")
 local onething2 = Instance.new("ImageLabel")
 onething2.Parent = onething
 onething2.Size = UDim2.new(0, 41, 0, 24)
@@ -272,7 +297,7 @@ onething2.Position = UDim2.new(1, 0, 0, 1)
 onething2.BorderSizePixel = 0
 onething2.BackgroundColor3 = Color3.new(0, 0, 0)
 onething2.BackgroundTransparency = 1
-onething2.Image = getcustomassetfunc("rent/assets/VapeLogo4.png")
+onething2.Image = getcustomassetfunc("rent/assets/rentLogo4.png")
 local onething3 = onething:Clone()
 onething3.ImageColor3 = Color3.new(0, 0, 0)
 onething3.ImageTransparency = 0.5
@@ -541,7 +566,7 @@ TargetInfo.GetCustomChildren().Parent:GetPropertyChangedSignal("Size"):connect(f
 		targetinfobkg1.BackgroundTransparency = 1
 	end
 end)
-shared.RentTargetInfo = {
+shared.rentTargetInfo = {
 	["UpdateInfo"] = function(tab, targetsize)
 		targetinfobkg3.Visible = (targetsize > 0) or (TargetInfo.GetCustomChildren().Parent.Size ~= UDim2.new(0, 220, 0, 0))
 		for i,v in pairs(tab) do
@@ -600,7 +625,7 @@ GuiLibrary["UpdateUI"] = function()
 		local newfirst = false
 		for i2,v2 in pairs(textwithoutthing:split("\n")) do
 			local rainbowsub = 2
-			local rainbowcolor = GuiLibrary["Settings"]["GUIObject"]["Color"] + (-0.015 * i2)
+			local rainbowcolor = GuiLibrary["Settings"]["GUIObject"]["Color"] + (GuiLibrary["ObjectsThatCanBeSaved"]["Gui ColorSliderColor"]["Api"]["RainbowValue"] and (-0.015 * i2) or 0)
 			if rainbowcolor < 0 then rainbowsub = 3 rainbowcolor = rainbowcolor * 0.25 end
 			local str = tostring(rainbowcolor)
 			local newcol = tonumber("0"..string.sub(str, rainbowsub, string.len(str)))
@@ -653,29 +678,29 @@ GuiLibrary["UpdateUI"] = function()
 	end)
 end
 
-GUI.CreateToggle("Auto-load module states", function() end, function() end, false, "RentOptions")
-GUI.CreateToggle("Blur Background", function() GuiLibrary["MainBlur"].Size = 25 end, function() GuiLibrary["MainBlur"].Size = 0 end, true, "RentOptions")
+GUI.CreateToggle("Auto-load module states", function() end, function() end, false, "rentOptions")
+GUI.CreateToggle("Blur Background", function() GuiLibrary["MainBlur"].Size = 25 end, function() GuiLibrary["MainBlur"].Size = 0 end, true, "rentOptions")
 local rescale = GUI.CreateToggle("Rescale", function() 
-	GuiLibrary["MainRescale"].Scale = cam.ViewportSize.X / 1920
+	GuiLibrary["MainRescale"].Scale = math.clamp(cam.ViewportSize.X / 1920, 0.5, 1)
 end, function()
 	GuiLibrary["MainRescale"].Scale = 1 
-end, true, "RentOptions")
+end, true, "rentOptions")
 cam:GetPropertyChangedSignal("ViewportSize"):connect(function()
 	if rescale["Enabled"] then
-		GuiLibrary["MainRescale"].Scale = cam.ViewportSize.X / 1920
+		GuiLibrary["MainRescale"].Scale = math.clamp(cam.ViewportSize.X / 1920, 0.5, 1)
 	end
 end)
-GUI.CreateToggle("Enable Multi-Keybinding", function() end, function() end, false, "RentOptions")
-local welcomemsg = GUI.CreateToggle("GUI bind indicator", function() end, function() end, true, "RentOptions")
-GUI.CreateToggle("Show Tooltips", function() GuiLibrary["ToggleTooltips"] = true end, function() GuiLibrary["ToggleTooltips"] = false end, true, "RentOptions")
-GUI.CreateToggle("Discord integration", function() end, function() end, false, "RentOptions")
-GUI.CreateToggle("Notifications", function() GuiLibrary["ToggleNotifications"] = true end, function() GuiLibrary["ToggleNotifications"] = false end, true, "RentOptions")
+GUI.CreateToggle("Enable Multi-Keybinding", function() end, function() end, false, "rentOptions")
+local welcomemsg = GUI.CreateToggle("GUI bind indicator", function() end, function() end, true, "rentOptions")
+GUI.CreateToggle("Show Tooltips", function() GuiLibrary["ToggleTooltips"] = true end, function() GuiLibrary["ToggleTooltips"] = false end, true, "rentOptions")
+GUI.CreateToggle("Discord integration", function() end, function() end, false, "rentOptions")
+GUI.CreateToggle("Notifications", function() GuiLibrary["ToggleNotifications"] = true end, function() GuiLibrary["ToggleNotifications"] = false end, true, "rentOptions")
 local GUIbind = GUI.CreateGUIBind()
 
 local teleportfunc = game:GetService("Players").LocalPlayer.OnTeleport:Connect(function(State)
     if State == Enum.TeleportState.Started then
 		GuiLibrary["SaveSettings"]()
-        queueteleport('shared.RentOptions = true if shared.RentDeveloper then loadstring(readfile("rent/NewMainScript.lua"))() else loadstring(game:HttpGet("https://raw.githubusercontent.com/CreatedHeroISMyFavoriteHero/NewBedwars/main/MainScript", true))() end')
+        queueteleport('shared.rentSwitchServers = true if shared.rentDeveloper then loadstring(readfile("rent/NewMainScript.lua"))() else loadstring(game:HttpGet("https://raw.githubusercontent.com/7GrandDadPGN/rentV4ForRoblox/main/NewMainScript.lua", true))() end')
     end
 end)
 
@@ -687,8 +712,8 @@ GuiLibrary["SelfDestruct"] = function()
 			v["Api"]["ToggleButton"](false)
 		end
 	end
-	shared.RentExecuted = nil
-	shared.RentSwitchServers = nil
+	shared.rentExecuted = nil
+	shared.rentSwitchServers = nil
 	shared.GuiLibrary = nil
 	GuiLibrary["KeyInputHandler"]:Disconnect()
 	GuiLibrary["KeyInputHandler2"]:Disconnect()
@@ -703,9 +728,9 @@ end
 GUI.CreateButton2("RESET CURRENT PROFILE", function()
 	GuiLibrary["SelfDestruct"]()
 	delfile("rent/Profiles/"..(GuiLibrary["CurrentProfile"] == "default" and "" or GuiLibrary["CurrentProfile"])..game.PlaceId..".rentprofile")
-	shared.RentSwitchServers = true
-	shared.RentOpenGui = true
-	loadstring(GetURL("MainScript.lua"))()
+	shared.rentSwitchServers = true
+	shared.rentOpenGui = true
+	loadstring(GetURL("NewMainScript.lua"))()
 end)
 GUI.CreateButton2("RESET GUI POSITIONS", function()
 	for i,v in pairs(GuiLibrary["ObjectsThatCanBeSaved"]) do
@@ -729,9 +754,9 @@ GUI.CreateButton2("SORT GUI", function()
 end)
 GUI.CreateButton2("UNINJECT", GuiLibrary["SelfDestruct"])
 
-loadstring(GetURL("AnyGame.Rent"))()
-if pcall(function() readfile("rent/Modules/"..game.PlaceId..".rent") end) then
-	loadstring(readfile("rent/Modules/"..game.PlaceId..".rent"))()
+loadstring(GetURL("AnyGame.rent"))()
+if pcall(function() readfile("rent/CustomModules/"..game.PlaceId..".rent") end) then
+	loadstring(readfile("rent/CustomModules/"..game.PlaceId..".rent"))()
 else
 	local publicrepo = checkpublicrepo(game.PlaceId)
 	if publicrepo then
@@ -748,20 +773,20 @@ GUIbind["Reload"]()
 GuiLibrary["UpdateUI"]()
 if blatantmode["Enabled"] then
 	pcall(function()
-		local frame = GuiLibrary["CreateNotification"]("Blatant Enabled", "Your script is now in blatant mode.", 4, "rent/assets/WarningNotification.png")
+		local frame = GuiLibrary["CreateNotification"]("Blatant Enabled", "rent is now in Blatant Mode.", 4, "rent/assets/WarningNotification.png")
 		frame.Frame.BackgroundColor3 = Color3.fromRGB(236, 129, 44)
 		frame.Frame.Frame.BackgroundColor3 = Color3.fromRGB(236, 129, 44)
 	end)
 end
-if not shared.RentSwitchServers then
+if not shared.rentSwitchServers then
 	GuiLibrary["LoadedAnimation"](welcomemsg["Enabled"])
 else
-	shared.RentSwitchServers = nil
+	shared.rentSwitchServers = nil
 end
-if shared.RentOpenGui then
+if shared.rentOpenGui then
 	GuiLibrary["MainGui"].ClickGui.Visible = true
 	GuiLibrary["MainBlur"].Enabled = true	
-	shared.RentOpenGui = nil
+	shared.rentOpenGui = nil
 end
 
 spawn(function()
