@@ -4,7 +4,7 @@ local function GetURL(scripturl)
 	if shared.rentDeveloper then
 		return readfile("rent/"..scripturl)
 	else
-		return game:HttpGet("https://raw.githubusercontent.com/CreatedHeroISMyFavoriteHero/NewBedwars"..scripturl, true)
+		return game:HttpGet("https://raw.githubusercontent.com/CreatedHeroISMyFavoriteHero/NewBedwars/"..scripturl, true)
 	end
 end
 local getasset = getsynasset or getcustomasset
